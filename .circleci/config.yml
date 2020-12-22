@@ -9,7 +9,7 @@ jobs:
           username: muhammadyasser
           password: $PASS
     steps: 
-      - checkout:
+      - checkout
       - run: npm i
       - save_cache:
           paths:
@@ -24,7 +24,7 @@ jobs:
           username: muhammadyasser
           password: $PASS
     steps:
-      - checkout:
+      - checkout
       - restore_cache:
           keys:
             - "npm-packages"
@@ -38,7 +38,7 @@ jobs:
           username: muhammadyasser
           password: $PASS
     steps:
-      - checkout:
+      - checkout
       - restore_cache:
           keys:
             - "npm-packages"
