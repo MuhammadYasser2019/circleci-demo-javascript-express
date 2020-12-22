@@ -11,10 +11,10 @@ jobs:
     steps: 
       - checkout
       - run: npm i
-      - save_cache:
-          paths:
-            - "/src/node_modules"
-          key: "npm-packages"
+      # - save_cache:
+      #     paths:
+      #       - "/src/node_modules"
+      #     key: "npm-packages"
       - run: npm run lint
   
   test:
@@ -26,9 +26,9 @@ jobs:
           password: $PASS
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - "npm-packages"
+      # - restore_cache:
+      #     keys:
+      #       - "npm-packages"
       - run: npm i 
       - run: npm run test 
   
@@ -41,10 +41,10 @@ jobs:
           password: $PASS
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - "npm-packages"
-      - run: npm run audit
+      # - restore_cache:
+      #     keys:
+      #       - "npm-packages"
+      - run: npm audit
 
 
 workflows:
