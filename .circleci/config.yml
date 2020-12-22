@@ -8,11 +8,18 @@ jobs:
       - checkout
       - run: npm i
       - run: npm run lint 
+      - save_cache:
+          paths:
+            - /src/node_modules
+          key: "npm-packages"
   test:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
       - run: npm i 
       - run: npm run test 
   analyze:
@@ -21,6 +28,7 @@ jobs:
     steps:
       - checkout
       - run: npm audit
+      
 workflows:
   pipeline:
     jobs:
