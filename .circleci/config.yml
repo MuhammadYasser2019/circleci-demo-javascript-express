@@ -4,49 +4,23 @@ jobs:
   build:
     docker: 
       - image: circleci/node:13.8.0
-      # - image: mongo:4.2.0
-      - auth:
-          username: muhammadyasser
-          password: $PASS
     steps: 
       - checkout
       - run: npm i
-      # - save_cache:
-      #     paths:
-      #       - "/src/node_modules"
-      #     key: "npm-packages"
-      - run: npm run lint
-  
+      - run: npm run lint 
   test:
     docker:
       - image: circleci/node:13.8.0
-      # - image: mongo:4.2.0
-      - auth:
-          username: muhammadyasser
-          password: $PASS
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - "npm-packages"
       - run: npm i 
       - run: npm run test 
-  
   analyze:
     docker:
       - image: circleci/node:13.8.0
-      # - image: mongo:4.2.0
-      - auth:
-          username: muhammadyasser
-          password: $PASS
     steps:
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - "npm-packages"
       - run: npm audit
-
-
 workflows:
   pipeline:
     jobs:
@@ -90,7 +64,6 @@ workflows:
   #         prefix: coverage
   #     - store_test_results:
   #         path: test-results.xml
-
 
 # version: 2.1
 
