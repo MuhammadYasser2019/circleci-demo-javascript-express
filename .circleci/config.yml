@@ -4,7 +4,7 @@ jobs:
   build:
     docker: 
       - image: circleci/node:10.16.3
-      # - image: mongo:4.2.0
+      - image: mongo:4.2.0
       - auth:
           username: muhammadyasser
           password: $PASS
@@ -20,6 +20,7 @@ jobs:
   test:
     docker:
       - image: circleci/node:10.16.3
+      - image: mongo:4.2.0
       - auth:
           username: muhammadyasser
           password: $PASS
@@ -34,6 +35,7 @@ jobs:
   analyze:
     docker:
       - image: circleci/node:10.16.3
+      - image: mongo:4.2.0
       - auth:
           username: muhammadyasser
           password: $PASS
