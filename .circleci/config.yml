@@ -61,15 +61,12 @@ jobs:
         #     name: Configure ec2 using ansible
         #     command: |
         #       ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
+        - add_ssh_keys:
+            fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]  
         - run:
             name: Configure ec2 using ansible
             command: |
-              apk add --update ansible # install the dependencies needed for your playbook
-        - add_ssh_keys:
-            fingerprints: 
-            - "be:c7:26:9b:23:3d:12:c8:11:2d:27:3b:88:4d:8a:89"
-        - run:  ssh-keyscan 34.215.212.124 >> ~/.ssh/known_hosts
-  
+              apk add --update ansible # install the dependencies needed for your playbook:
         - run:
             name: Configure server
             command: |
