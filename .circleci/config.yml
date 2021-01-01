@@ -61,8 +61,9 @@ jobs:
             --template-file ./ec2-on-the-fly/resources.yml \
             --stack-name temp-stack
       # - run: return 1
-      - delete_stack
-        when: on_fail
+      - run: 
+          delete_stack
+          when: on_fail
 
 
 
