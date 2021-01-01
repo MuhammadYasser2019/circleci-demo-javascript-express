@@ -45,10 +45,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - command: |
-          aws cloudformation deploy \
-          -- template-file ec2-on-the-fly/resources.yml \
-          -- stack-name temp-stack
+      - run:
+        - name: Ensure backend infrastructure exist
+        - command: |
+            aws cloudformation deploy \
+            -- template-file ec2-on-the-fly/resources.yml \
+            -- stack-name temp-stack
 
 workflows:
   pipeline:
