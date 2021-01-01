@@ -57,7 +57,7 @@ jobs:
 
       steps:
         - checkout
-        - add_ssh_keys
+        - add_ssh_keys:
             fingerprints: 
             - "16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"
         - run:
