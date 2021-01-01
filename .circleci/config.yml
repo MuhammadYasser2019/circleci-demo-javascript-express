@@ -59,7 +59,7 @@ jobs:
         - checkout
         - add_ssh_keys:
             fingerprints: 
-            - "e9:0b:1e:00:e4:cf:f9:0f:49:57:90:79:73:3f:c2:34"
+            - "16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"
         - run:
             name: Configure ec2 using ansible
             command: |
