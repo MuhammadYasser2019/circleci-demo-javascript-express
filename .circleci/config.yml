@@ -68,6 +68,8 @@ jobs:
         - add_ssh_keys:
             fingerprints: 
             - "be:c7:26:9b:23:3d:12:c8:11:2d:27:3b:88:4d:8a:89"
+        - run:  ssh-keyscan 34.215.212.124 >> ~/.ssh/known_hosts
+  
         - run:
             name: Configure server
             command: |
