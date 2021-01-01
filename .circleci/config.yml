@@ -68,6 +68,14 @@ jobs:
             command: |
               apk add --update ansible # install the dependencies needed for your playbook:
         - run:
+            name: Configure ec2 using ansible
+            command: |
+              apk add --update openssh
+        - run:
+            name: Configure ec2 using ansible
+            command: |
+              echo "StrictHostKeyChecking=no" >> ~/.ssh/config # install the dependencies needed for your playbook:
+        - run:
             name: Configure server
             command: |
               ansible-playbook -i ./Lab1/inventory.txt ./Lab1/main.yml
