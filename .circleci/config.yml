@@ -60,10 +60,10 @@ jobs:
         - add_ssh_keys:
             fingerprints: 
             - "16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"
-        - run:
-            name: Configure ec2 using ansible
-            command: |
-              ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
+        # - run:
+        #     name: Configure ec2 using ansible
+        #     command: |
+        #       ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
         - run:
             name: Configure ec2 using ansible
             command: |
