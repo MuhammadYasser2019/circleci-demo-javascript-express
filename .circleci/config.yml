@@ -60,7 +60,7 @@ jobs:
           command: |
             aws cloudformation deploy \
             --template-file ./ec2-on-the-fly/resources.yml \
-            --stack-name temp-stack
+            --stack-name prod-${CIRCLE_WORKFLOW_ID}
       - run: return 1
       - delete_stack
 
