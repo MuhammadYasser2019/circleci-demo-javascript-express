@@ -49,7 +49,7 @@ jobs:
           name: Ensure backend infrastructure exist
           command: |
             aws cloudformation deploy \
-            --template-file ./ec2-on-the-fly/resources.yml \
+            --template-file resources.yml \
             --stack-name temp-stack
 
 workflows:
