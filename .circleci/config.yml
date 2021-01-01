@@ -50,7 +50,6 @@ jobs:
           command: |
             aws cloudformation deploy \
             --template-file ./ec2-on-the-fly/resources.yml \
-            --parameters file ./ec2-on-the-fly/resources-params.json \
             --stack-name temp-stack
 
 
