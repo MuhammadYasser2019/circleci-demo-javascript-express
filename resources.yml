@@ -1,0 +1,73 @@
+Description: >
+    Muhammad Yasser / Udacity Nanodegree
+    This is a template for creating a VPC
+
+Parameters: 
+
+    EnvironmentName: 
+        Description: A name that will be listed with any created Resources
+        Type: String
+
+  
+Resources:
+
+  Ec2Instance:
+
+      Type: AWS::EC2::Instance
+      Properties: 
+        AdditionalInfo: onTheFlyInstance
+        # Affinity: String
+        # AvailabilityZone: String
+        # BlockDeviceMappings: 
+        #   - BlockDeviceMapping
+        # CpuOptions: 
+        #   CpuOptions
+        # CreditSpecification: 
+        #   CreditSpecification
+        # DisableApiTermination: Boolean
+        # EbsOptimized: Boolean
+        # ElasticGpuSpecifications: 
+        #   - ElasticGpuSpecification
+        # ElasticInferenceAccelerators: 
+        #   - ElasticInferenceAccelerator
+        # EnclaveOptions: 
+        #   EnclaveOptions
+        # HibernationOptions: 
+        #   HibernationOptions
+        # HostId: String
+        # HostResourceGroupArn: String
+        # IamInstanceProfile: String
+        ImageId: ami-0ac73f33a1888c64a 
+        # InstanceInitiatedShutdownBehavior: String
+        InstanceType: t2.micro
+        # Ipv6AddressCount: Integer
+        # Ipv6Addresses: 
+        #   - InstanceIpv6Address
+        # KernelId: String
+        KeyName: Udacity-us-west-2
+        # LaunchTemplate: 
+        #   LaunchTemplateSpecification
+        # LicenseSpecifications: 
+        #   - LicenseSpecification
+        # Monitoring: Boolean
+        # NetworkInterfaces: 
+        # - AssociatePublicIpAddress: "true"        
+        #   DeviceIndex: "0"
+        # PlacementGroupName: String
+        # PrivateIpAddress: String
+        # RamdiskId: String
+        SecurityGroupIds: 
+          - sg-0354ce653b364e3b4
+        # SecurityGroups: 
+        #   - String
+        # SourceDestCheck: Boolean
+        # SsmAssociations: 
+        #   - SsmAssociation
+        # SubnetId: String
+        Tags:
+            - Key: Name 
+              Value: Ec2ForTest 
+        # Tenancy: String
+        # UserData: String
+        # Volumes: 
+        #   - Volume
