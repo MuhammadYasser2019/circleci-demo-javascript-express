@@ -74,7 +74,7 @@ jobs:
         - run:
             name: Configure ec2 using ansible
             command: |
-              echo "StrictHostKeyChecking=no" >> ~/.ssh/config # install the dependencies needed for your playbook:
+              ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
         - run:
             name: Configure server
             command: |
