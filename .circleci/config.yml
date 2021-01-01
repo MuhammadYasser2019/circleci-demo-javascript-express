@@ -6,6 +6,15 @@ version: 2.1
 #     jobs:
 #       - build
 
+
+### command to call in rollback
+commands:
+  delete_stack:
+    steps:
+      - run:
+          name: delete_aws_stack
+          command: |
+            aws cloudformation delete-stack --stack-name prod-${CIRCLE_WORKFLOW_ID}
 jobs:
   # build:
   #   working_directory: ~/mern-starter
@@ -40,45 +49,50 @@ jobs:
   #         prefix: coverage
   #     - store_test_results:
   #         path: test-results.xml
-  # executor:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Ensure backend infrastructure exist
-  #         command: |
-  #           aws cloudformation deploy \
-  #           --template-file ./ec2-on-the-fly/resources.yml \
-  #           --stack-name temp-stack
-  ansible:
-      docker:
-        - image: python:3.7-alpine3.11
+  executor:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Ensure backend infrastructure exist
+          command: |
+            aws cloudformation deploy \
+            --template-file ./ec2-on-the-fly/resources.yml \
+            --stack-name temp-stack
+      - run:
+          name: error trigger
+          command: return 2
+      - delete_stack
+        when: on_fail
 
-      steps:
-        - checkout
-        # - run:
-        #     name: Configure ec2 using ansible
-        #     command: |
-        #       ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
-        - add_ssh_keys:
-            fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]  
-        - run:
-            name: Configure ec2 using ansible
-            command: |
-              apk add --update ansible # install the dependencies needed for your playbook:
-        - run:
-            name: Configure ec2 using ansible
-            command: |
-              apk add --update openssh
-        - run:
-            name: Configure ec2 using ansible
-            command: |
-              ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
-        - run:
-            name: Configure server
-            command: |
-              ansible-playbook -i ./Lab1/inventory.txt ./Lab1/main.yml
+
+
+########## ansible lab
+  # ansible:
+  #     docker:
+  #       - image: python:3.7-alpine3.11
+
+  #     steps:
+  #       - checkout
+  #       - add_ssh_keys:
+  #           fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]  
+  #       - run:
+  #           name: Install ansible binary
+  #           command: |
+  #             apk add --update ansible # install the dependencies needed for your playbook:
+  #       - run:
+  #           name: Install openssh
+  #           command: |
+  #             apk add --update openssh
+  #       - run:
+  #           name: Configure ssh to accept new key without yes/no
+  #           command: |
+  #             ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
+  #       - run:
+  #           name: Configure server using ansible
+  #           command: |
+  #             ansible-playbook -i ./Lab1/inventory.txt ./Lab1/main.yml
 
 
 
@@ -86,12 +100,7 @@ workflows:
   pipeline:
     jobs:
       # - build
-      # - test: 
-      #     requires:
-      #       - build
-      # - analyze:
-      #     requires:
-      #       - test
-      # - executor
-      - ansible
+      - executor
+      # - ansible
+
 
