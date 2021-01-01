@@ -64,7 +64,7 @@ jobs:
           name: error trigger
           command: return 2
       - delete_stack
-        when: on_fail
+          when: on_fail
 
 
 
