@@ -40,17 +40,34 @@ jobs:
   #         prefix: coverage
   #     - store_test_results:
   #         path: test-results.xml
-  executor:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Ensure backend infrastructure exist
-          command: |
-            aws cloudformation deploy \
-            --template-file ./ec2-on-the-fly/resources.yml \
-            --stack-name temp-stack
+  # executor:
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Ensure backend infrastructure exist
+  #         command: |
+  #           aws cloudformation deploy \
+  #           --template-file ./ec2-on-the-fly/resources.yml \
+  #           --stack-name temp-stack
+  ansible:
+      docker:
+        - image: python:3.7-alpine3.11
+
+      steps:
+        - checkout
+        - add_ssh_keys:
+            fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]
+        - run:
+            name: Configure ec2 using ansible
+            command: |
+              apk add --update ansible # install the dependencies needed for your playbook
+        - run:
+            name: Configure server
+            command: |
+              ansible-playbook -i inventory.txt ./Lab1/main.yml
+
 
 
 workflows:
@@ -63,5 +80,6 @@ workflows:
       # - analyze:
       #     requires:
       #       - test
-      - executor
+      # - executor
+      - ansible
 
