@@ -60,11 +60,9 @@ jobs:
             aws cloudformation deploy \
             --template-file ./ec2-on-the-fly/resources.yml \
             --stack-name temp-stack
-      - run:
-          name: error trigger
-          command: return 2
+      - run: return 1
       - delete_stack
-          when: on_fail
+        when: on_fail
 
 
 
