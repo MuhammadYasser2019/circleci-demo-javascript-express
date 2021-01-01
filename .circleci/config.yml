@@ -46,8 +46,8 @@ jobs:
     steps:
       - checkout
       - run:
-        - name: Ensure backend infrastructure exist
-        - command: |
+          name: Ensure backend infrastructure exist
+          command: |
             aws cloudformation deploy \
             -- template-file ec2-on-the-fly/resources.yml \
             -- stack-name temp-stack
