@@ -1,0 +1,2 @@
+aws cloudformation deploy --template-file content-delivery.yml --stack-name production-cdn --parameter-overrides PipelineID="udacity-c9ers" --tags 
+

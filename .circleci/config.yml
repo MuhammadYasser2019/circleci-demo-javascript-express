@@ -1,104 +1,195 @@
+### last lab on the chapter ,,, to promote to production ####
 version: 2.1
 
-# workflows:
-#   version: 2
-#   build:
-#     jobs:
-#       - build
-
-
-### command to call in rollback
-commands:
-  delete_stack:
-    steps:
-      - run:
-          name: delete_aws_stack
-          command: |
-            aws cloudformation delete-stack --stack-name prod-${CIRCLE_WORKFLOW_ID}
-          when: on_fail
 jobs:
-  # build:
-  #   working_directory: ~/mern-starter
-  #   docker:
-  #     - image: circleci/node:10.16.3
-  #     - image: mongo:4.2.0
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: update-npm
-  #         command: 'sudo npm install -g npm@5'
-  #     - restore_cache:
-  #         key: dependency-cache-{{ checksum "package-lock.json" }}
-  #     - run:
-  #         name: install-npm-wee
-  #         command: npm install
-  #     - save_cache:
-  #         key: dependency-cache-{{ checksum "package-lock.json" }}
-  #         paths:
-  #           - ./node_modules
-  #     - run:
-  #         name: test
-  #         command: npm test
-  #     - run:
-  #         name: code-coverage
-  #         command: './node_modules/.bin/nyc report --reporter=text-lcov'
-  #     - store_artifacts:
-  #         path: test-results.xml
-  #         prefix: tests
-  #     - store_artifacts:
-  #         path: coverage
-  #         prefix: coverage
-  #     - store_test_results:
-  #         path: test-results.xml
-  executor:
+  new_s3_provisioning:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run:
-          name: Ensure backend infrastructure exist
+          name: Execute S3 CF
           command: |
             aws cloudformation deploy \
-            --template-file ./ec2-on-the-fly/resources.yml \
-            --stack-name prod-${CIRCLE_WORKFLOW_ID}
-      - run: return 1
-      - delete_stack
+            --template-file ./CloudFormation/S3-for-CD/s3-cf.yml \
+            --stack-name prod-s3-${CIRCLE_WORKFLOW_ID}
+            --parameter-overrides NAME="${CIRCLE_WORKFLOW_ID}"
+          
+      - run: aws s3 sync . s3://"${CIRCLE_WORKFLOW_ID}" --delete
+
+  cdn_mapping_to_new_prod:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Execute S3 CF
+          command: |
+            aws cloudformation deploy \
+            --template-file ./CloudFormation/Content-Delivery-for-CD/content-delivery.yml \
+            --stack-name cloudfront
+            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+          
+
+
+# #### IAAC job to delete ec2 stack in job failure #####
+# version: 2.1
+
+# ### command to call in rollback
+# commands:
+#   delete_stack:
+#     steps:
+#       - run:
+#           name: delete_aws_stack
+#           command: |
+#             aws cloudformation delete-stack --stack-name prod-${CIRCLE_WORKFLOW_ID}
+#           when: on_fail
+# jobs:
+#   executor:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Ensure backend infrastructure exist
+#           command: |
+#             aws cloudformation deploy \
+#             --template-file ./ec2-on-the-fly/resources.yml \
+#             --stack-name prod-${CIRCLE_WORKFLOW_ID}
+#       - run: return 1
+#       - delete_stack
+
+# workflows:
+#   pipeline:
+#     jobs:
+#       - executor
 
 
 
-########## ansible lab
-  # ansible:
-  #     docker:
-  #       - image: python:3.7-alpine3.11
+# ############# ansible lab ###########
+# version: 2.1
 
-  #     steps:
-  #       - checkout
-  #       - add_ssh_keys:
-  #           fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]  
-  #       - run:
-  #           name: Install ansible binary
-  #           command: |
-  #             apk add --update ansible # install the dependencies needed for your playbook:
-  #       - run:
-  #           name: Install openssh
-  #           command: |
-  #             apk add --update openssh
-  #       - run:
-  #           name: Configure ssh to accept new key without yes/no
-  #           command: |
-  #             ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
-  #       - run:
-  #           name: Configure server using ansible
-  #           command: |
-  #             ansible-playbook -i ./Lab1/inventory.txt ./Lab1/main.yml
+# jobs:
+#   ansible:
+#       docker:
+#         - image: python:3.7-alpine3.11
+
+#       steps:
+#         - checkout
+#         - add_ssh_keys:
+#             fingerprints: ["16:da:1a:5d:77:76:06:e2:ea:a6:a7:f9:88:48:1c:50"]  
+#         - run:
+#             name: Install ansible binary
+#             command: |
+#               apk add --update ansible # install the dependencies needed for your playbook:
+#         - run:
+#             name: Install openssh
+#             command: |
+#               apk add --update openssh
+#         - run:
+#             name: Configure ssh to accept new key without yes/no
+#             command: |
+#               ssh -o StrictHostKeyChecking=no ubuntu@34.215.212.124 exit
+#         - run:
+#             name: Configure server using ansible
+#             command: |
+#               ansible-playbook -i ./Lab1/inventory.txt ./Lab1/main.yml
+
+# workflows:
+#   pipeline:
+#     jobs:
+#       - ansible
 
 
 
-workflows:
-  pipeline:
-    jobs:
-      # - build
-      - executor
-      # - ansible
+# ##### old task ,, build job #####
+
+# version: 2.1
+
+# jobs:
+#   build:
+#     working_directory: ~/mern-starter
+#     docker:
+#       - image: circleci/node:10.16.3
+#       - image: mongo:4.2.0
+#     steps:
+#       - checkout
+#       - run:
+#           name: update-npm
+#           command: 'sudo npm install -g npm@5'
+#       - restore_cache:
+#           key: dependency-cache-{{ checksum "package-lock.json" }}
+#       - run:
+#           name: install-npm-wee
+#           command: npm install
+#       - save_cache:
+#           key: dependency-cache-{{ checksum "package-lock.json" }}
+#           paths:
+#             - ./node_modules
+#       - run:
+#           name: test
+#           command: npm test
+#       - run:
+#           name: code-coverage
+#           command: './node_modules/.bin/nyc report --reporter=text-lcov'
+#       - store_artifacts:
+#           path: test-results.xml
+#           prefix: tests
+#       - store_artifacts:
+#           path: coverage
+#           prefix: coverage
+#       - store_test_results:
+#           path: test-results.xml
+
+# workflows:
+#   pipeline:
+#     jobs:
+#       - build
+
+
+
+# ##### first lab, to make a jobs dependant on each other 
+
+# version: 2.1
+
+# jobs:
+#   build:
+#     docker: 
+#       - image: circleci/node:13.8.0
+#     steps: 
+#       - checkout
+#       - run: npm i
+#       - run: npm run lint 
+#       - save_cache:
+#           paths:
+#             - /src/node_modules
+#           key: "npm-packages"
+#   test:
+#     docker:
+#       - image: circleci/node:13.8.0
+#     steps:
+#       - checkout
+#       - restore_cache:
+#           keys:
+#             - "npm-packages"
+#       - run: npm i 
+#       - run: npm run test 
+#   analyze:
+#     docker:
+#       - image: circleci/node:13.8.0
+#     steps:
+#       - checkout
+#       - run: npm audit
+      
+# workflows:
+#   pipeline:
+#     jobs:
+#       - build
+#       - test: 
+#           requires:
+#             - build
+#       - analyze:
+#           requires:
+#             - test
 
 
