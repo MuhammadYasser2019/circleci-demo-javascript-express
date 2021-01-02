@@ -27,7 +27,7 @@ jobs:
           command: |
             aws cloudformation deploy \
             --template-file ./CloudFormation/Content-Delivery-for-CD/content-delivery.yml \
-            --stack-name cloudfront \
+            --stack-name production-cdn \
             --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
 workflows:
