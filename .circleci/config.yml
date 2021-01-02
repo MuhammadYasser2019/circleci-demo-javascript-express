@@ -29,6 +29,14 @@ jobs:
             --template-file ./CloudFormation/Content-Delivery-for-CD/content-delivery.yml \
             --stack-name cloudfront
             --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+
+workflows:
+  pipeline:
+    jobs:
+      - new_s3_provisioning
+      - cdn_mapping_to_new_prod: 
+          requires:
+            - new_s3_provisioning
           
 
 
