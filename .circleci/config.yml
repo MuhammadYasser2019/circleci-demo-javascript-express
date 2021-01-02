@@ -54,7 +54,7 @@ workflows:
       - cdn_mapping_to_new_prod: 
           requires:
             - new_s3_provisioning
-      - moke_test:
+      - smoke_test:
           requires:
             - "new_s3_provisioning"
           
