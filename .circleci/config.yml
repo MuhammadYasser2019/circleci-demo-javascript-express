@@ -30,6 +30,23 @@ jobs:
             --stack-name production-cdn \
             --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
+  smoke_test:
+      docker:
+        - image: alpine:latest
+      steps:
+        - run: apk add --update curl
+        - run:
+            name: smoke test.
+            command: |
+              URL="${PipelineID}.s3.amazonaws.com"
+              if curl -s --head ${URL} # test if blog.udacity. com exists
+              then
+               return 0
+              else
+               return 1
+              fi
+
+
 workflows:
   pipeline:
     jobs:
@@ -37,6 +54,9 @@ workflows:
       - cdn_mapping_to_new_prod: 
           requires:
             - new_s3_provisioning
+      - moke_test:
+          requires:
+            - "new_s3_provisioning"
           
 
 
