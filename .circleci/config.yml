@@ -14,7 +14,12 @@ jobs:
             --template-file ./CloudFormation/ec2-on-the-fly/resources.yml \
             --stack-name prod-s3-${EnvironmentName} \
             --parameter-overrides EnvironmentName="prometheus"
-            
+
+workflows:
+  pipeline:
+    jobs:
+      - new_ec2_prometheus
+      
 ### last lab on the chapter ,,, to promote to production ####
 # version: 2.1
 
