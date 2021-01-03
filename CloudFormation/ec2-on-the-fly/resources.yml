@@ -7,8 +7,6 @@ Parameters:
     EnvironmentName: 
         Description: A name that will be listed with any created Resources
         Type: String
-        # Default: ec2OnTheFly
-
   
 Resources:
 
