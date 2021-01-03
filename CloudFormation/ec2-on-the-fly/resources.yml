@@ -2,12 +2,12 @@ Description: >
     Muhammad Yasser / Udacity Nanodegree
     This is a template for creating a VPC
 
-# Parameters: 
+Parameters: 
 
-#     EnvironmentName: 
-#         Description: A name that will be listed with any created Resources
-#         Type: String
-#         Default: ec2OnTheFly
+    EnvironmentName: 
+        Description: A name that will be listed with any created Resources
+        Type: String
+        # Default: ec2OnTheFly
 
   
 Resources:
@@ -38,7 +38,10 @@ Resources:
         # HostId: String
         # HostResourceGroupArn: String
         # IamInstanceProfile: String
-        ImageId: ami-0ac73f33a1888c64a 
+
+        ### ubuntu 20 for prometheus ###
+        ImageId: ami-07dd19a7900a1f049 
+
         # InstanceInitiatedShutdownBehavior: String
         InstanceType: t2.micro
         # Ipv6AddressCount: Integer

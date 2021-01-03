@@ -1,62 +1,59 @@
-### last lab on the chapter ,,, to promote to production ####
+### execute job to create prometheus ec2 ###
 version: 2.1
 
 jobs:
-  new_s3_provisioning:
+  new_ec2_prometheus:
     docker:
       - image: amazon/aws-cli
     steps:
       - checkout
       - run:
-          name: Execute S3 CF
+          name: Execute ec2 CF
           command: |
             aws cloudformation deploy \
-            --template-file ./CloudFormation/S3-for-CD/s3-cf.yml \
-            --stack-name prod-s3-${CIRCLE_WORKFLOW_ID} \
-            --parameter-overrides NAME="${CIRCLE_WORKFLOW_ID}"
+            --template-file ./CloudFormation/ec2-on-the-fly/resources.yml \
+            --stack-name prod-s3-${EnvironmentName} \
+            --parameter-overrides EnvironmentName="prometheus"
+            
+### last lab on the chapter ,,, to promote to production ####
+# version: 2.1
+
+# jobs:
+#   new_s3_provisioning:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Execute S3 CF
+#           command: |
+#             aws cloudformation deploy \
+#             --template-file ./CloudFormation/S3-for-CD/s3-cf.yml \
+#             --stack-name prod-s3-${CIRCLE_WORKFLOW_ID} \
+#             --parameter-overrides NAME="${CIRCLE_WORKFLOW_ID}"
           
-      - run: aws s3 sync CloudFormation/S3-for-CD/. s3://"${CIRCLE_WORKFLOW_ID}" --delete
+#       - run: aws s3 sync CloudFormation/S3-for-CD/. s3://"${CIRCLE_WORKFLOW_ID}" --delete
 
-  cdn_mapping_to_new_prod:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run:
-          name: Execute S3 CF
-          command: |
-            aws cloudformation deploy \
-            --template-file ./CloudFormation/Content-Delivery-for-CD/content-delivery.yml \
-            --stack-name production-cdn \
-            --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
+#   cdn_mapping_to_new_prod:
+#     docker:
+#       - image: amazon/aws-cli
+#     steps:
+#       - checkout
+#       - run:
+#           name: Execute S3 CF
+#           command: |
+#             aws cloudformation deploy \
+#             --template-file ./CloudFormation/Content-Delivery-for-CD/content-delivery.yml \
+#             --stack-name production-cdn \
+#             --parameter-overrides PipelineID="${CIRCLE_WORKFLOW_ID}"
 
-  smoke_test:
-      docker:
-        - image: alpine:latest
-      steps:
-        - run: apk add --update curl
-        - run:
-            name: smoke test.
-            command: |
-              URL="${PipelineID}.s3.amazonaws.com"
-              if curl -s --head ${URL} # test if blog.udacity. com exists
-              then
-               return 0
-              else
-               return 1
-              fi
-
-
-workflows:
-  pipeline:
-    jobs:
-      - new_s3_provisioning
-      - cdn_mapping_to_new_prod: 
-          requires:
-            - new_s3_provisioning
-      - smoke_test:
-          requires:
-            - "new_s3_provisioning"
+# workflows:
+#   pipeline:
+#     jobs:
+#       - new_s3_provisioning
+#       - cdn_mapping_to_new_prod: 
+#           requires:
+#             - new_s3_provisioning
           
 
 
